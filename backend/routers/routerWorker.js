@@ -121,6 +121,32 @@ workerRouter.get('/getworkers', (req, res) => {
     })
 })
 
+
+workerRouter.get('/getWorkersInfo', (req, res) => {
+    const sql = `SELECT workerFirstName, workerJob, workerHourlyPrice,workerRating  FROM workers;`;
+    conn.query(sql, (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json(err);
+        return;
+      }
+      res.status(200).json(results);
+    });
+  });
+
+  workerRouter.get('/getWorkers/:workerCategory', (req, res) => {
+    const workerCategory = req.params.workerCategory
+    const sql = `SELECT workerFirstName, workerJob, workerHourlyPrice,workerRating FROM workers WHERE workerCategory= ?;`
+    conn.query(sql, [workerCategory], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(500).json(err)
+        }
+        res.status(200).json(results)
+    })
+})
+  
+
 workerRouter.get('/getWorker/:id', (req, res) => {
     const id = req.params.id
     const sql = `SELECT * FROM workers WHERE workersId = ?;`
