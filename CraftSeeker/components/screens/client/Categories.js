@@ -36,6 +36,9 @@ export default function Categories({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.subcontainer}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+           <Image source={require('../client/back.png')} style={styles.backIcon} />
+         </TouchableOpacity>
       <Image source={require('../client/Screenshot_1.png')} style={styles.logo} />
         <View style={styles.iconsContainer}>
           {categories.map((category, index) => (
@@ -67,6 +70,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     alignSelf: 'center',
   },
+  
+  backIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 10,
+    resizeMode: 'contain',
+  },
+  
   iconsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',

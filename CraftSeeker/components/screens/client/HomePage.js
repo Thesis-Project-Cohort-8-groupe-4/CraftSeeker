@@ -13,7 +13,7 @@ const HomePage = () => {
 const [isPriceAscending, setPriceAscending] = useState(true);
  useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get('http://192.168.156.162:4000/api/workers/getWorkersInfo');//192.168.110.162
+      const result = await axios.get('http://192.168.173.162:4000/api/workers/getWorkersInfo');//192.168.110.162
       setData(result.data);
       console.log(result.data);
     };
@@ -35,7 +35,7 @@ const [isPriceAscending, setPriceAscending] = useState(true);
   };
   
   const filterDescending = () => {
-    const sortedData = [...data].sort((a, b) => b.workerHourlyPrice - a.workerHourlyPrice);
+    const sortedData = [...data].sort((a, b) => b.workerRating - a.workerRating);
     setData(sortedData);
     setPriceAscending(false);
     toggleFilter();
@@ -71,6 +71,8 @@ const [isPriceAscending, setPriceAscending] = useState(true);
   return (
     
     <View style={styles.container}>
+      <View style={styles.subcontainer}>
+      
        <View style={styles.header}>
         <TouchableOpacity style={{ flex:0.9 }} onPress={toggleMenu}>
           <Image source={require('../client/menu-icon-5.png')} style={styles.menuIcon} />
@@ -89,7 +91,7 @@ const [isPriceAscending, setPriceAscending] = useState(true);
     </TouchableOpacity>
     <TouchableOpacity onPress={filterDescending}>
       <Text style={[styles.filterMenuItem, !isPriceAscending && styles.filterMenuItemActive]}>
-        Price (Descending)
+      rating
       </Text>
     </TouchableOpacity>
   </View>
@@ -145,32 +147,31 @@ const [isPriceAscending, setPriceAscending] = useState(true);
         keyExtractor={(item) => item.id}
       />
       </View>
-
+</View>
     </View>
   );
 };
 
 
 const styles = StyleSheet.create({
-  container:{
-    borderWidth : 6,
-    top:28,
-    height : 730,
-    borderColor : "#036BB9",
+  container: {
+    borderWidth: 16,
+    height: '94.8%',
+    top: '5%',
+    width: '100%',
+    backgroundColor: 'white',
+    borderColor: '#036BB9',
     borderRadius: 10,
-    backgroundColor:'white'
-
- },
- subContainer:{
-  borderWidth : 17,
-  height : 782,
-  width:382,
-  borderColor : "white",
-  borderRadius: 10,
-  left:-2,
-  top:-3,
-  bottom:-3
-},
+  },
+  subcontainer: {
+    borderWidth: 8,
+    height: '102%',
+    width: '102%',
+    borderRadius: 8,
+    left: '-1.5%',
+    borderColor: 'white',
+    top: '-1%',
+  },
  filter:{
 left:250,
 height:40,
@@ -179,7 +180,7 @@ top:-35,
  },
  filterMenu: {
   position: 'absolute',
-  top: 190,
+  top: 200,
   right: 15,
   backgroundColor: '#fff',
   borderWidth: 1,
@@ -237,7 +238,7 @@ filterMenuItemActive: {
     zIndex: 1,
     width: 180,
     height: 550,
-    marginTop: 100
+    marginTop: 70
   },
   menuItem: {
     paddingVertical: 5,

@@ -11,7 +11,7 @@ export default function Workers({ route, navigation }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get(`http://192.168.156.162:4000/api/workers/getWorkers/${route.params.category}`);
+        const result = await axios.get(`http://192.168.173.162:4000/api/workers/getWorkers/${route.params.category}`);
         setWorkers(result.data);
       } catch (error) {
         setErrorMessage('Failed to fetch workers');
