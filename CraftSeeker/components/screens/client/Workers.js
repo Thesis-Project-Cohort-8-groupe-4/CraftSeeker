@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image,TouchableOpacity } from 'react-native';
+import { Button, SearchBar } from 'react-native-elements';
 import StarRating from 'react-native-star-rating-widget';
 import axios from 'axios';
 import { FlatList } from 'react-native';
@@ -10,8 +11,8 @@ export default function Workers({ route, navigation }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const result = await axios.get(`http://192.168.173.162:4000/api/workers/getWorkers/${route.params.category}`);
+      try {1
+        const result = await axios.get(`http://192.168.72.162:4000/api/workers/getWorkers/${route.params.category}`);
         setWorkers(result.data);
       } catch (error) {
         setErrorMessage('Failed to fetch workers');
@@ -28,11 +29,21 @@ export default function Workers({ route, navigation }) {
         <Text style={styles.cardText}>{item.workerJob}</Text>
         <Text style={styles.cardText}>{item.workerHourlyPrice}$/hour</Text>
         <Text style={styles.ratingg}>({item.workerRating})</Text>
+        <Button
+      title="Demand"
+      style={{ borderRadius: 10,height:20,width:20, }}
+      containerStyle={{padding:10, left:'80%',marginTop:'50%',height:85, overflow:'hidden', 
+      borderRadius:4, backgroundColor: 'transparent',position:'absolute'}}
+      onPress={() => {
+        navigation.navigate('CreateTask');
+      }}
+    />
         <StarRating style={styles.rating}
   rating={item.workerRating}
   starSize={20}
   starStyle={{ marginRight: -5 }}
   starSpacing={5}
+  onChange={()=>{}}
 />
       </View>
     </View>

@@ -1,62 +1,75 @@
-import React from 'react';
-import { StyleSheet, View, Image, Text  } from 'react-native';
-import { Card, Button, Icon } from 'react-native-elements';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text,Image} from 'react-native';
+import { Button, Icon } from 'react-native-elements';
+import axios from 'axios';
+import { useNavigation,useRoute } from '@react-navigation/native';
+import url from "../../../link";
 
-
-import { useState } from 'react';
-
-import { useNavigation } from '@react-navigation/native';
-
-
-const WorkerProfil = () => {
+const WorkerProfil = (props) => {
+  const [worker, setWorker] = useState([]);
   const [available, setAvailable] = useState(true);
-   const navigation = useNavigation();
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { profilePictureUrl } = route.params;
+  console.log(props.route.params.id);
+
+  const fetchWorkerData = async () => {
+    try {
+      const response = await axios.get(`http://${url}:4000/api/Workers/getWorker/${props.route.params.id}`);
+      setWorker(response.data);
+    } catch (error) {
+      console.log('Failed to fetch worker data:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchWorkerData();
+  }, []);
+
+  if (worker.length === 0) {
+    return <Text>Loading...</Text>;
+  }
+
+  const workerData = worker[0]; // Get the first item in the worker array
 
   return (
-    
-    <View  style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.card}>
         <View style={styles.info}>
-          <Text style={styles.name}>John Doe</Text>
-          <Text style={styles.email}>johndoe@example.com</Text>
-          <Text style={styles.address}>123 Main Street, Anytown USA</Text>
+           
+      {console.log(workerData.imageUrl.slice(1,workerData.imageUrl.length-1))}
+        
+        <Image source={{ uri: workerData.imageUrl.slice(1,workerData.imageUrl.length-1)}} style={styles.image} />
+          <Text style={styles.name}>Name: {workerData.workerFirstName}</Text>
+          <Text style={styles.email}>{workerData.workerEmail}</Text>
+          <Text style={styles.address}>{workerData.workerAdress}</Text>
         </View>
       </View>
       <View style={styles.card}>
-        <Text style={styles.bio}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor velit eget metus fringilla, quis ultricies lectus hendrerit. Nulla eu dui a enim dictum vehicula.</Text>
+        <Text style={styles.bio}>{workerData.workerProfessionalSummary}</Text>
       </View>
       <View style={styles.card}>
-        <Text style={styles.website}>Website: www.johndoe.com</Text>
-        <Text style={styles.phone}>Phone: (555) 123-4567</Text>
+        <Text style={styles.phone}>{workerData.workerPhoneNumber}</Text>
       </View>
 
-      <Card containerStyle={styles.card}>
-        <Text style={styles.title}>Social Media</Text>
-        <View style={styles.social}>
-          <Icon name="instagram" type="font-awesome" />
-          <Icon name="facebook" type="font-awesome" />
-          <Icon name="linkedin" type="font-awesome" />
-        </View>
-      </Card>
-    <Button 
-  icon={<Icon name="edit" type="font-awesome" color="#ffffff" />}
-  title="Edit"
-  onPress={() => navigation.navigate('Edit')}
-  buttonStyle={styles.editButton}
-/>
+      <Button
+        icon={<Icon name="edit" type="font-awesome" color="#ffffff" />}
+        title="Edit"
+        onPress={() => navigation.navigate('Edit', { id: props.route.params.id })}
+        buttonStyle={styles.editButton}
+      />
 
-      <View style={styles.availablContainer }>
+      <View style={styles.availablContainer}>
         <Button
           icon={<Icon name="check-circle" />}
           title={available ? 'Available' : 'Not Available'}
-          onPress={() => setAvailable(prev => !prev)}
+          onPress={() => setAvailable((prev) => !prev)}
           buttonStyle={styles.editButton}
         />
       </View>
-    </View >
+    </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -83,6 +96,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
+    
   },
   info: {
     marginLeft: 10,

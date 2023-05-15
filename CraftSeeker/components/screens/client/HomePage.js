@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, TouchableOpacity, TouchableHighlight, Text, FlatList, Pressable } from 'react-native';
  import axios from 'axios';
  import { useNavigation } from '@react-navigation/native';
-import { SearchBar } from 'react-native-elements';
+import { Button, SearchBar } from 'react-native-elements';
 import StarRating from 'react-native-star-rating-widget';
 const HomePage = () => {
   const [isMenuVisible, setMenuVisible] = useState(false);
@@ -13,7 +13,7 @@ const HomePage = () => {
 const [isPriceAscending, setPriceAscending] = useState(true);
  useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get('http://192.168.173.162:4000/api/workers/getWorkersInfo');//192.168.110.162
+      const result = await axios.get('http://192.168.72.162:4000/api/workers/getWorkersInfo');//192.168.110.162
       setData(result.data);
       console.log(result.data);
     };
@@ -55,14 +55,33 @@ const [isPriceAscending, setPriceAscending] = useState(true);
           <Text style={styles.cardTitle}>{item.workerFirstName}</Text>
           <Text style={styles.cardText}>{item.workerJob}</Text>
           <Text style={styles.cardText}>{item.workerHourlyPrice}$/hour</Text>
+           
+<Button
+      title="Demand"
+      style={{ borderRadius: 10,height:20,width:20, }}
+      containerStyle={{padding:10, left:'80%',marginTop:'50%',height:85, overflow:'hidden', 
+      borderRadius:4, backgroundColor: 'transparent',position:'absolute'}}
+      onPress={() => {
+        navigation.navigate('CreateTask');
+      }}
+    />
           <Text style={styles.ratingg}>({item.workerRating})</Text>
-          <StarRating style={styles.rating}
+          <StarRating 
+  style={styles.rating}
   rating={item.workerRating}
   starSize={20}
   starStyle={{ marginRight: -5 }}
+  onChange={() => {}}
   starSpacing={5}
 />
-
+{/* 
+<Button
+      title="Demand"
+      style={{ borderRadius: 10 }}
+      onPress={() => {
+        // handle button press here
+      }}
+    /> */}
         </View>
       </View>
     );

@@ -7,7 +7,9 @@ import Dashboard from './components/screens/worker/WorkersDashBoard/DashBoard'
 import Profil from './components/screens/client/Profil/Profil';
 import HomePage from './components/screens/client/HomePage';
 import Categories from './components/screens/client/Categories';
+import CreateATask from  './components/screens/client/CreateATask';
 import Workers from './components/screens/client/Workers';
+import RegisterWorker from './components/screens/worker/RegisterWorker'
 const Stack = createNativeStackNavigator();
 
 const screenOptions = {
@@ -22,6 +24,7 @@ export default function Navigation() {
       <Stack.Screen name='HomePage' component={HomePage} />
        <Stack.Screen name='Categories' component={Categories} /> 
        <Stack.Screen name="Workers" component={Workers}/>
+       <Stack.Screen name="CreateTask" component={CreateATask}/>
         <Stack.Screen name='WorkerProfil' component={WorkerProfil} />
         <Stack.Screen name='Profil' component={Profil} />
         
