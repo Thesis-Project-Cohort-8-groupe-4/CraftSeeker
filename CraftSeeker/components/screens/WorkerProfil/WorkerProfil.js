@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, Text } from 'react-native';
 import { Card, Button, Icon } from 'react-native-elements';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import Link from '../Link';
 
 
 
@@ -20,7 +21,7 @@ const WorkerProfil = (props) => {
 
   const fetchWorkerData = async () => {
     try {
-      const response = await axios.get(`http://192.168.104.23:4000/api/Workers/getWorker/${id}`); // Replace 'workerId' with the actual ID of the worker you want to fetch
+      const response = await axios.get(`http://${Link}:4000/api/Workers/getWorker/${id}`); // Replace 'workerId' with the actual ID of the worker you want to fetch
       setWorker(response.data)
       console.log(response.data);
     

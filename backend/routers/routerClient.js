@@ -6,6 +6,8 @@ require('dotenv').config();
 const { authenticateToken } = require("../middlewares/jwt.js");
 const jwt = require('jsonwebtoken');
 const crypto = require("crypto")
+const multer = require('multer')
+const fs = require('fs');
 
 clientRouter.post('/addclients',(req,res)=>{
     const data = req.body
@@ -79,21 +81,40 @@ clientRouter.get('/getone/:id',(req,res)=>{
     })
 })
 
-clientRouter.put('/updateUser/:id',(req,res)=>{
-    const id = req.params.id
-    const {clientAdress}= req.body
-    const {clientEmail} = req.body
-    const {clientPhone}=  req.body
-    const sql = `UPDATE clients SET  clientAdress = ?, clientEmail = ?, clientPhone = ?
-    WHERE clientId = ?;`
-    conn.query (sql,[clientAdress,clientEmail,clientPhone,id],(err,results)=>{
-        if (err){
-            console.log(err)
-            res.status(500).json(err)
+clientRouter.put('/updateUser/:id', (req, res) => {
+    const id = req.params.id;
+  
+    const {
+      clientLastName,
+      clientFirstName,
+      clientAdress,
+      clientEmail,
+      clientPhone,
+      imageUrl,
+    } = req.body;
+  
+    const sql = `UPDATE clients SET clientAdress = ?, clientEmail = ?, clientPhone = ?, imageUrl = ?, clientLastName = ?, clientFirstName = ? WHERE clientId = ?`;
+    conn.query(
+      sql,
+      [
+        clientAdress,
+        clientEmail,
+        clientPhone,
+        imageUrl,
+        clientLastName,
+        clientFirstName,
+        id,
+      ],
+      (err, results) => {
+        if (err) {
+          console.log(err);
+          res.status(500).json(err);
         }
-        res.status(200).json(results)
-    })
-})
+        res.status(200).json(results);
+      }
+    );
+  });
+  
 
 clientRouter.get('/getall',(req,res)=>{
     const sql = `SELECT * FROM clients;`
@@ -145,6 +166,63 @@ clientRouter.post('/login', authenticateToken, async (req, res) => {
         }
     });
   });
+
+
+  clientRouter.post('/uploadFile', (req, res, next) => {
+    const storage = multer.diskStorage({
+      destination: function (req, file, cb) {
+        const uplDir="uploads/"
+        if(!fs.existsSync(uplDir)){
+            fs.mkdirSync(uplDir)
+        }
+        cb(null, uplDir);
+      },
+      filename: function (req, file, cb) {
+        cb(null, file.originalname);
+      }
+    });
+  
+    const upload = multer({ storage }).single('profile-image');
+    upload(req, res, function (err) {
+      if (err) {
+        return res.send(err);
+      }
+      console.log('File uploaded to server');
+      console.log(req.file);
+  
+      // SEND FILE TO CLOUDINARY
+      const cloudinary = require('cloudinary').v2;
+      cloudinary.config({
+        cloud_name: 'dilwfvmbr',
+        api_key: '443273299735126',
+        api_secret: 'gv4yova2aVkz0IyYgwRcqAjV7EM',
+        secure: true
+      });
+  
+      const path = require('path');
+      const filePath = path.resolve(req.file.path);
+      const uniqueFilename = new Date().toISOString(); 
+  
+      cloudinary.uploader.upload(filePath, {
+        public_id: `Clients/${uniqueFilename}`,
+        tags: 'Clients'
+      }, function (err, result) {
+        if (err) {
+          console.log('Error uploading file to Cloudinary');
+          return res.send(err);
+        }
+  
+        
+        fs.unlinkSync(filePath);
+  
+        res.json(result.url);
+      }).then();
+    })
+    
+  });
+
+
+
 
 
 

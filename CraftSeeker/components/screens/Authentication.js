@@ -33,16 +33,21 @@ export default function Authentication() {
       console.log(token, "localstorage");
       if (token) {
         // if token exists, verify it and use it for authentication
-        const response = await axios.post(`http://${Link}:4000/api/clients/login`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (response.status === 200) {
-          // token is valid, navigate to authenticated screen
-          //navigation.navigate('AuthenticatedScreen');
-          console.log("login success with token", response.data);
-        } else {
-          // token is invalid, attempt to sign in
+        try {
+          const response = await axios.post(`http://${Link}:4000/api/clients/verify-token`, null, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+  
+          if (response.status === 200) {
+            // token is valid, navigate to authenticated screen
+            console.log("login success with token", response.data);
+            navigation.navigate("HomePage");
+          } else {
+            // token is invalid, attempt to sign in
+            await attemptSignIn();
+          }
+        } catch (error) {
+          // error occurred while verifying token, attempt to sign in
           await attemptSignIn();
         }
       } else {
@@ -50,24 +55,23 @@ export default function Authentication() {
         await attemptSignIn();
       }
     } catch (error) {
-      console.error(error);
+      console.log(JSON.stringify(error));
       Alert.alert('Error', 'Failed to sign in. Please try again.');
     }
   };
-
+  
   const attemptSignIn = async () => {
     if (selected === 'client') {
       const response = await axios.post(`http://${Link}:4000/api/clients/login`, {
         clientEmail: emailInput,
         clientPassword: passwordInput,
       });
-
+  
       if (response.status === 200) {
         // authentication successful, store token and navigate to authenticated screen
         await AsyncStorage.setItem('token', response.data.token);
-        //navigation.navigate('AuthenticatedScreen');
         console.log("login success without token", response.data);
-
+        navigation.navigate("HomePage",{id : response.data.clientId});
       } else {
         // authentication failed, display error message
         Alert.alert('Error', response.data.message);
@@ -77,13 +81,12 @@ export default function Authentication() {
         workerEmail: emailInput,
         workerPassword: passwordInput,
       });
-
+  
       if (response.status === 200) {
         // authentication successful, store token and navigate to authenticated screen
         await AsyncStorage.setItem('token', response.data.token);
         console.log("login success worker without token", response.data);
-
-        //navigation.navigate('AuthenticatedScreen');
+        navigation.navigate("Dashboard",{id : response.data.workersId});
       } else {
         // authentication failed, display error message
         Alert.alert('Error', response.data.message);
@@ -92,6 +95,8 @@ export default function Authentication() {
       Alert.alert('Select Client or Worker Please!');
     }
   };
+  
+  
 
 
 
@@ -252,27 +257,6 @@ export default function Authentication() {
           />
         </View>
       </Modal>
-
-
-      {/*FINGERPRINT && GOOGLE*/}
-      {!focused && (
-        <View style={styles.alternativeLogins}>
-          <View style={styles.connectWithTouch}>
-            <Text style={styles.loginWithTouchIDText}>LOGIN WITH TOUCH ID</Text>
-            <Image
-              source={require('../../assets/touch.png')}
-              style={styles.fingerprintIcon}
-            />
-          </View>
-          <View style={styles.connectWithGmail}>
-            <Text style={styles.connectWithText}>or connect with</Text>
-            <View style={styles.googleLoginButton}>
-              <Image source={googleSignInButton} style={styles.googleIcon} />
-            </View>
-          </View>
-        </View>
-      )}
-
     </>
   );
 }

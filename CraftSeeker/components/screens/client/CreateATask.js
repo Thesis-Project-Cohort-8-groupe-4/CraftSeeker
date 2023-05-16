@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, Text,Image } from 'react-native';
-const CreateATask = () => {
+import { View, TextInput, StyleSheet, TouchableOpacity, Text,Image } from 'react-native';CreateATask = () => {
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const handleTaskNameChange = (text) => {
@@ -17,7 +16,7 @@ const CreateATask = () => {
   return (
     <View style={styles.container}>
       <View style={styles.subcontainer}>
-      <Image source={require('../client/Screenshot_1.png')} style={styles.logo} />
+      <Image source={require('../../../assets/logo.png')} style={styles.logo} />
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
            <Image source={require('../client/back.png')} style={styles.backIcon} />
          </TouchableOpacity>

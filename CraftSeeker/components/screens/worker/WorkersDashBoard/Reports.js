@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
-import dummyData from './dummyData.json';
+
 
 const Reports = () => {
   const [selectedWorker, setSelectedWorker] = useState([]);
   useEffect(() => {
-    setSelectedWorker(dummyData);
+    setSelectedWorker(props);
   }, []);
 
   const reportsList = selectedWorker.map((report, index) => (

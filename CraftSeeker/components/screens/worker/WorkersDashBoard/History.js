@@ -6,9 +6,9 @@ const History = () => {
   const [history, setHistory] = useState([]);
   
   useEffect(() => {
-    // const allReports = dummyData.map(worker => worker.reports);
-    // const flattenedReports = [].concat.apply([], allReports);
-    // setHistory(flattenedReports);
+    const allReports = history.map(worker => worker.reports);
+    const flattenedReports = [].concat.apply([], allReports);
+    setHistory(flattenedReports);
   }, []);
 
   const historyList = history.map((item, index) => (

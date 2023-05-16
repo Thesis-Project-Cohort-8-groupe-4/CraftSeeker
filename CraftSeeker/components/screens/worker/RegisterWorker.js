@@ -125,7 +125,7 @@ const obj= {
       const workerResponse = await axios.post(`http://${Link}:4000/api/workers/addworker`,obj );
       console.log(obj,"dataaaa");
       console.log(obj.workersId)
-        navigation.navigate('WorkerProfil', { id: obj.workersId });
+        navigation.navigate('Dashboard', { id: obj.workersId });
 
     } catch (error) {
       console.log('Error saving profile:', error);

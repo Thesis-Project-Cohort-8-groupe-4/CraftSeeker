@@ -46,7 +46,8 @@ workerRouter.post('/addworker', async (req, res) => {
         workerJob,
         workerPassword,
         imageUrl,
-        workersId
+        workersId,
+        activeTask
     } = req.body;
 
     const hashedPassword = async () => {
@@ -61,9 +62,9 @@ workerRouter.post('/addworker', async (req, res) => {
     // const workersId = crypto.randomBytes(32).toString("hex")
     const hPassword = await hashedPassword();
 
-    const sql = `INSERT INTO workers ( workersId,workerFirstName, workerLastName, workerAdress, workerEmail, workerCategory, workerDateOfBirth, workerPhoneNumber, workerJob,workerPassword,imageUrl) 
-    VALUES (?,?, ?, ?, ?, ?, ?, ?, ?,?, ?)`;
-    conn.query(sql, [workersId ,workerFirstName, workerLastName, workerAdress, workerEmail, workerCategory, workerDateOfBirth, workerPhoneNumber, workerJob, hPassword,imageUrl], (err, results) => {
+    const sql = `INSERT INTO workers ( workersId,workerFirstName, workerLastName, workerAdress, workerEmail, workerCategory, workerDateOfBirth, workerPhoneNumber, workerJob,workerPassword,imageUrl ,activeTask) 
+    VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    conn.query(sql, [workersId ,workerFirstName, workerLastName, workerAdress, workerEmail, workerCategory, workerDateOfBirth, workerPhoneNumber, workerJob, hPassword,imageUrl,activeTask], (err, results) => {
             if(err){
                 console.log(err)
                 res.status(500).json(err)

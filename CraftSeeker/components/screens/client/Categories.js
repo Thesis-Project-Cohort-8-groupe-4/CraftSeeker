@@ -39,7 +39,7 @@ export default function Categories({navigation}) {
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
            <Image source={require('../client/back.png')} style={styles.backIcon} />
          </TouchableOpacity>
-      <Image source={require('../client/Screenshot_1.png')} style={styles.logo} />
+      <Image source={require('../../../assets/logo.png')} style={styles.logo} />
         <View style={styles.iconsContainer}>
           {categories.map((category, index) => (
             <TouchableOpacity 

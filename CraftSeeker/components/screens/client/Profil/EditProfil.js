@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { FontAwesome } from 'react-native-vector-icons';
 import {
   View,
   Text,
@@ -11,25 +10,24 @@ import {
   Platform,
   Button,
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+// import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
+// import { Asset } from 'expo-media-library';
+import axios from 'axios'
+// import uri from '../../../link'
 
-import axios from 'axios';
-import Profil from './Profil';
-//import { useState,useEffect } from 'react';
 
+const EditProfil = (props) => {
+  const [clientFirstName, setFirstName] = useState('');
+  const [clientLastName, setLastName] = useState('');
+  const [clientEmail, setEmail] = useState('');
+  const [clientAdress, setAddress] = useState('');
+  const [clientPhoneNumber, setPhone] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [profilePictureUrl, setProfilePictureUrl] = useState('');
 
-const EditProfil = () => {
-
-    const [clientFirstName, setFirstName] = useState('');
-    const [clientLastName, setLastName] = useState('');
-    const [clientEmail, setEmail] = useState('');
-    const [clientAddress, setAddress] = useState('');
-    const [clientPhoneNumber, setPhone] = useState('');
-    const [clientDateOfBirth, setBirth] = useState('');
-
-    const [profilePicture, setProfilePicture] = useState(null);
-
-    
   useEffect(() => {
+    console.log(props.route.params,'the id ');
     (async () => {
       if (Platform.OS !== 'web') {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -40,75 +38,143 @@ const EditProfil = () => {
     })();
   }, []);
 
-  const handleSave = async () => {
-    const data = new FormData();
-    data.append('profilePicture', {
-      uri: profilePicture,
-      type: 'image/jpeg',
-      name: 'profilePicture.jpg',
+  const handleSelectPicturee = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
     });
-    data.append('firstName', clientFirstName);
-    data.append('lastName', clientLastName);
-    data.append('email', clientEmail);
-    data.append('address', clientAddress);
-    data.append('Phone Number', clientPhoneNumber);
-    data.append('Date Of Birthday', clientDateOfBirth);
-   
+  
+    if (!result.cancelled) {
+      const imageUri = result.uri;
+      setProfilePicture(imageUri);
+  
+      const formData = new FormData();
+      formData.append('profile-image', {
+        uri: imageUri,
+        type: 'image/jpeg',
+        name: 'profilePicture.jpg',
+      });
+  
+      try {
+        const response = await axios.post(
+          `http://192.168.1.5:4000/api/clients/uploadFile`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        const imageUrl = response.data;
+        console.log(response.data);
+        setProfilePictureUrl(imageUrl);
+        console.log('Image uploaded successfully:', imageUrl);
+      } catch (error) {
+        console.log('Error uploading image:', error);
+      }
+    }
+  };
+  
+  
+
+  const handleTakePicture = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+  
+    if (!result.cancelled) {
+      const imageUri = result.uri;
+      setProfilePicture(imageUri);
+  
+      const formData = new FormData();
+      formData.append('profile-image', {
+        uri: imageUri,
+        type: 'image/jpeg',
+        name: 'profilePicture.jpg',
+      });
+  
+      try {
+        const response = await axios.post(
+          'http://192.168.1.5:4000/api/clients/uploadFile',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        const imageUrl = response.data.url;
+        setProfilePictureUrl(imageUrl);
+        console.log('Image uploaded successfully:', imageUrl);
+      } catch (error) {
+        console.log('Error uploading image:', error);
+      }
+    }
+  };
+  
+
+
+  const handleSave = async () => {
+    // const data = new FormData();
+    // data.append('profile-image', {
+    //   uri: profilePicture,
+    //   type: 'image/jpeg',
+    //   name: 'profilePicture.jpg',
+    // });
+    // data.append('clientFirstName', clientFirstName);
+    // data.append('clientLastName', clientLastName);
+    // data.append('clientEmail', clientEmail);
+    // data.append('clientAdress', clientAdress);
+    // data.append('clientPhone', clientPhoneNumber);
+  console.log(props.route.params.id,'id','========',{
+    clientFirstName: clientFirstName,
+    clientLastName: clientLastName,
+    clientEmail: clientEmail,
+    clientAdress: clientAdress,
+    clientPhone: clientPhoneNumber,
+    imageUrl: profilePictureUrl,
+  });
     try {
-      const response = await axios.put('http:/api/client', data);
-      // set the state values to the updated worker information
-      setFirstName(response.data.firstName);
-      setLastName(response.data.lastName);
-      setEmail(response.data.email);
-      setAddress(response.data.address);
-      setPhone(response.data.phoneNumber);
-      setBirth(response.data.DateOfBirth)
+      // Upload image to Cloudinary
+      
+      // Update client information with the Cloudinary image URL
+      const response = await axios.put(
+        `http://192.168.1.5:4000/api/clients/updateUser/${props.route.params.id}`,
+        {
+          clientFirstName: clientFirstName,
+          clientLastName: clientLastName,
+          clientEmail: clientEmail,
+          clientAdress: clientAdress,
+          clientPhone: clientPhoneNumber,
+          imageUrl: profilePictureUrl,
+        }
+      );
+  console.log(response.data,'==>');
+  props.route.params.setup(!props.route.params.up)
+      // set the state values to the updated client information
+      setFirstName(response.data.clientfirstName);
+      setLastName(response.data.clientlastName);
+      setEmail(response.data.clientEmail);
+      setAddress(response.data.clientAdress);
+      setPhone(response.data.clientphone);
       alert('Profile updated successfully!');
     } catch (error) {
+        console.log(JSON.stringify(error),'err');
       alert('Failed to update profile.');
     }
   };
-
-  const handleSelectPicture = async () => {
-    let result = null;
-    
-    if (Platform.OS === 'web') {
-      // On web, use file input to select a picture
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.onchange = (event) => {
-        result = event.target.files[0];
-      };
-      input.click();
-    } else {
-      // On native platforms, launch the camera app
-      const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      if (status !== 'granted') {
-        alert('Sorry, we need camera permissions to make this work!');
-        return;
-      }
-      
-      result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-    }
   
-    if (result) {
-      setProfilePicture(result.uri);
-    }
-  };
-
-
 
   return (
     <ScrollView >
-      <TouchableOpacity style={styles.profilePictureContainer} >
+      <TouchableOpacity style={styles.profilePictureContainer} onPress={handleSelectPicturee}>
         {profilePicture ? (
-          <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
+          <Image source={{ uri: Data.imageUrl.slice(1,clientData.imageUrl.length-1)}} style={styles.profilePicture} />
         ) : (
           <View style={styles.profilePicturePlaceholder}>
             <Text style={styles.profilePicturePlaceholderText}>Choose a Profile Picture</Text>
@@ -118,7 +184,7 @@ const EditProfil = () => {
           </View>
         )}
       </TouchableOpacity>
-      <Button title="Select Picture" onPress={handleSelectPicture}  />
+      <Button title="Select Picture" onPress={handleTakePicture} />
 
 
       <Text style={styles.label}>First Name</Text>
@@ -141,100 +207,65 @@ const EditProfil = () => {
         value={clientEmail}
         onChangeText={setEmail}
       />
- <Text style={styles.label}>Phone</Text>
+
+      <Text style={styles.label}>Address</Text>
+      <TextInput
+        style={styles.input}
+        value={clientAdress}
+        onChangeText={setAddress}
+      />
+
+      
+
+      <Text style={styles.label}>Phone</Text>
       <TextInput
         style={styles.input}
         value={clientPhoneNumber}
         onChangeText={setPhone}
       />
 
-
-      <Text style={styles.label}>Address</Text>
-      <TextInput
-        style={styles.input}
-        value={clientAddress}
-        onChangeText={setAddress}
-      />
-
-<Text style={styles.label}>Date Of Birthday</Text>
-      <TextInput
-        style={styles.input}
-        value={clientDateOfBirth}
-        onChangeText={setFirstName}
-      />
-
-     
-
-
-<Button title="Save" onPress={handleSave} icon={<FontAwesome name="save" size={20} color="white" />} buttonStyle={styles.saveButton}/>
+      <Button title="Save" onPress={handleSave} />
     </ScrollView>
   );
-
-
-
-
-
-
 };
+
 const styles = StyleSheet.create({
-    container: {
-    flex: 1,
-    padding: 20,
-    },
-    label: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    },
-    input: {
-    fontSize: 18,
-    borderWidth: 1,
-    borderColor: '#dcdcdc',
-    borderRadius: 5,
+  container: {
     padding: 10,
-    marginBottom: 20,
-    },
-    saveButton: {
-    backgroundColor: '#6c757d',
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 30,
-    },
-    saveButtonText: {
-    color: '#fff',
-    fontSize: 18,
+    
+  },
+  label: {
+    fontSize: 16,
     fontWeight: 'bold',
-    marginLeft: 10,
-    },
-    profilePictureContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 50,
-    },
-    profilePicture: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginBottom: 20,
-    },
-    profilePicturePlaceholder: {
-    backgroundColor: '#dcdcdc',
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-    },
-    profilePicturePlaceholderText: {
-    color: '#333',
+    marginTop: 60,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 8,
+    marginTop: 5,
+    marginBottom: 15,
+  },
+  profilePicturePlaceholderText : {
     fontSize: 18,
-    },
-    });
+    color: '#888',
+    textAlign: 'center',
+    padding: 30,
+  },
+  profilePicture: {
+    width: '100%',
+    height: '100%',
+  },
+  profilePictureContainer: {
+    marginTop : 20,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: '#eee',
+    marginBottom: 20,
+    overflow: 'hidden',
+  },
 
+});
 
- export default EditProfil
+export default EditProfil;

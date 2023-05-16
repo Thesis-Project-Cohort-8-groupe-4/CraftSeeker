@@ -1,56 +1,78 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-
-
 import { useNavigation } from '@react-navigation/native';
+import { Button } from 'react-native-elements';
 
-const Dashboard = () => {
+import Reports from './Reports';
+import TaskHistory from './TaskHistory';
+import ActiveTask from './ActiveTask';
+import OffersRequests from './OffersRequests';
+import Rating from './Ratings';
 
-    const navigation = useNavigation();
+const Dashboard = (props) => {
+  const navigation = useNavigation();
+  const [offerCount, setOfferCount] = useState(0);
+  const id = props.route.params.workersId
 
-    return (
-        <>
-            <View style={styles.logoContainer}>
-                <Text >DashBoard</Text>
-              
+  const handleOfferCountChange = (count) => {
+    setOfferCount(count);
+  };
+ // dashboard presk qryb tekml , mazel kn design 
+ // mahabich ypushi 
+ const navigateToProfile=()=>{
+   navigation.navigate("WorkerProfil" , {id:id})
+ }
+ 
+  return (
+    <>
+    <View style={styles.logoContainer}>
+      <Text>DashBoard</Text>
+      <Button title ="Profile" onPress ={navigateToProfile}></Button>
+    </View>
+    <View style={styles.container}>
+      <View style={styles.topThreeContainer}>
+        <TouchableOpacity
+          style={styles.activeTask}
+          onPress={() => navigation.navigate('ActiveTask')}>
+          <Text>Active Task</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.lastTask}
+          onPress={() => navigation.navigate('TaskHistory')}>
+          <Text>Last Task Review</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.offerRequests}
+          onPress={() => navigation.navigate('OfferRequests')}>
+          <Text>Offers Requests</Text>
+          <Text>you have {offerCount} offers</Text>
+        </TouchableOpacity>
+        <OffersRequests onCountChange={handleOfferCountChange} />
+      </View>
+      <View style={styles.bottomContainer}>
+        <TouchableOpacity
+          style={styles.reports}
+          onPress={() => navigation.navigate('Reports')}>
+          <Text>Reports</Text>
+        </TouchableOpacity>
+        <View style={styles.bottomRightContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('Ratings')}>
+            <View style={styles.availability}>
+              <Text>Available in: 5 days</Text>
             </View>
-            <View style={styles.container}>
-
-                <View style={styles.topThreeContainer}>
-                    <View style={styles.activeTask}>
-                        <Text>Active Task</Text>
-                    </View>
-                    <View style={styles.lastTask}>
-                        <Text>Last Task Review</Text>
-                    </View>
-                    <View style={styles.offerRequests}>
-                        <Text>Offers Requests</Text>
-
-                    </View>
-                </View>
-                <View style={styles.bottomContainer}>
-                    <View style={styles.reports}>
-                        <Text>Reports</Text>
-                        
-
-                    </View>
-                    <View style={styles.bottomRightContainer}>
-                        <View style={styles.availability}>
-                            <Text>Available in : 5 days</Text>
-
-                        </View>
-                        <View style={styles.ratings}>
-                            
-                        </View>
-                        <TouchableOpacity style={styles.history} onPress={() => navigation.navigate('TaskHistory')}>
-                            <Text>Show History</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-            </View>
-        </>
-    );
+          </TouchableOpacity>
+          <View style={styles.ratings}></View>
+          <TouchableOpacity
+            style={styles.history}
+            onPress={() => navigation.navigate('TaskHistory')}>
+            <Text>Show History</Text>
+          </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+     
+    </>
+  );
 };
 
 export default Dashboard;

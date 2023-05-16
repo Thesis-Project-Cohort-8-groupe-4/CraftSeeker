@@ -1,21 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { StyleSheet, View, Image, TouchableOpacity, TouchableHighlight, Text, FlatList, Pressable } from 'react-native';
  import axios from 'axios';
- import { useNavigation } from '@react-navigation/native';
+ import { useNavigation ,useRoute } from '@react-navigation/native';
 import { Button, SearchBar } from 'react-native-elements';
 import StarRating from 'react-native-star-rating-widget';
-const HomePage = () => {
+import Link from '../Link';
+const HomePage = (props) => {
+  const route = useRoute()
   const [isMenuVisible, setMenuVisible] = useState(false);
   const [data, setData] = useState([]);
-   const navigation = useNavigation();
+  const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterVisible, setFilterVisible] = useState(false);
-const [isPriceAscending, setPriceAscending] = useState(true);
+  const [isPriceAscending, setPriceAscending] = useState(true);
+  // const [user,setUser] = useState({})
+
+
+   const user = props.route.params.id
+   
+   useEffect(()=>{
+    console.log(user)
+   },[])
+
+
  useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get('http://192.168.173.162:4000/api/workers/getWorkersInfo');//192.168.110.162
+      const result = await axios.get(`http://${Link}:4000/api/workers/getWorkersInfo`);//192.168.110.162
       setData(result.data);
-      console.log(result.data);
+      // console.log(result.data);
     };
     fetchData();
     
@@ -96,7 +108,7 @@ const [isPriceAscending, setPriceAscending] = useState(true);
         <TouchableOpacity style={{ flex:0.9 }} onPress={toggleMenu}>
           <Image source={require('../client/menu-icon-5.png')} style={styles.menuIcon} />
         </TouchableOpacity>
-        <Image source={require('../client/Screenshot_1.png')} style={styles.logo} />
+        <Image source={require('../../../assets/logo.png')} style={styles.logo} />
         
          </View>
         
@@ -160,11 +172,11 @@ const [isPriceAscending, setPriceAscending] = useState(true);
   <Image source={require('../client/filter.png')} style={styles.filter} />
 </Pressable>
 <View style={styles.list}>  
-    <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
+      <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
       </View>
 </View>
     </View>

@@ -3,13 +3,14 @@ import { StyleSheet, Text, View, Image,TouchableOpacity } from 'react-native';
 import StarRating from 'react-native-star-rating-widget';
 import axios from 'axios';
 import { FlatList } from 'react-native';
+import Link from '../Link';
 export default function Workers({ route, navigation }) {
   const [workers, setWorkers] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get(`http://192.168.173.162:4000/api/workers/getWorkers/${route.params.category}`);
+        const result = await axios.get(`http://${Link}:4000/api/workers/getWorkers/${route.params.category}`);
         setWorkers(result.data);
       } catch (error) {
         setErrorMessage('Failed to fetch workers');
@@ -40,7 +41,7 @@ export default function Workers({ route, navigation }) {
          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
            <Image source={require('../client/back.png')} style={styles.backIcon} />
          </TouchableOpacity>
-         <Image source={require('../client/Screenshot_1.png')} style={styles.logo} />
+         <Image source={require('../../../assets/logo.png')} style={styles.logo} />
           <View style={{ height: '88%',top:'10%' }}>
   <FlatList
     style={{ flex: 1 }}
