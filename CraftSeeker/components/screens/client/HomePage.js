@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import { StyleSheet, View, Image, TouchableOpacity, TouchableHighlight, Text, FlatList, Pressable } from 'react-native';
  import axios from 'axios';
- import { useNavigation ,useRoute } from '@react-navigation/native';
+ import { useNavigation } from '@react-navigation/native';
 import { Button, SearchBar } from 'react-native-elements';
 import StarRating from 'react-native-star-rating-widget';
 import Link from '../Link';
+import { BackgroundImage } from 'react-native-elements/dist/config';
 const HomePage = (props) => {
-  const route = useRoute()
+
   const [isMenuVisible, setMenuVisible] = useState(false);
   const [data, setData] = useState([]);
   const navigation = useNavigation();
@@ -54,15 +55,16 @@ const HomePage = (props) => {
   };
   
   const renderItem = ({ item }) => {
+  
     if (searchQuery && !item.workerFirstName.toLowerCase().includes(searchQuery.toLowerCase())) {
-    
+      console.log(item,"========>")
       return null;
     }
-
+    console.log(item.imageUrl,"<========")
     return (
-      <View style={[styles.card, { zIndex: 1 }]}>
+      <View key={item.workersId} style={[styles.card, { zIndex: 1 }]}>
 
-        <Image source={require('../client/hello.jpg')} style={styles.cardImage} />
+<Image source={{ uri: item.imageUrl&&item.imageUrl }} style={styles.cardImage} />
         <View style={{ flexDirection: 'column' }}>
           <Text style={styles.cardTitle}>{item.workerFirstName}</Text>
           <Text style={styles.cardText}>{item.workerJob}</Text>
@@ -71,10 +73,10 @@ const HomePage = (props) => {
 <Button
       title="Demand"
       style={{ borderRadius: 10,height:20,width:20, }}
-      containerStyle={{padding:10, left:'80%',marginTop:'50%',height:85, overflow:'hidden', 
+      containerStyle={{padding:10, left:'90%',marginTop:'50%',height:85, overflow:'hidden', 
       borderRadius:4, backgroundColor: 'transparent',position:'absolute'}}
       onPress={() => {
-        navigation.navigate('CreateTask');
+        navigation.navigate('CreateTask',{workersId:item.workersId,clientId:user});
       }}
     />
           <Text style={styles.ratingg}>({item.workerRating})</Text>

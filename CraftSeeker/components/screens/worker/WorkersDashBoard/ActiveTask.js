@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import axios from 'axios';
+import Link from '../../Link';
 
 function ActiveTask(props) {
   const { taskTitle, taskText, taskDate } = props;
@@ -9,11 +10,15 @@ function ActiveTask(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get('http://192.168.103.10:4000/api/tasks/gettask');
+        const result = await axios.get(`http://${Link}:4000/api/tasks/getalltask`);
         setData(result.data);
         console.log(result.data);
       } catch (error) {
-        console.error(error);
+        if (error.response && error.response.status === 404) {
+          console.error('Task not found');
+        } else {
+          console.error('Error fetching data:', error);
+        }
       }
     };
 
@@ -29,13 +34,38 @@ function ActiveTask(props) {
   };
 
   return (
-    <View>
-      <Text style={{ fontWeight: 'bold' }}>{data.length > 0 ? data[0].taskTitle : taskTitle}</Text>
-      <Text>{data.length > 0 ? data[0].taskText : taskText}</Text>
-      <Text style={{ fontStyle: 'italic' }}>Deadline: {data.length > 0 ? formatDate(data[0].taskDate) : taskDate}</Text>
-      <Text style={{ color: 'red' }}>{data.length > 0 ? data[0].taskText : taskText}</Text>
+    <View style={styles.container}>
+      {data.length > 0 ? (
+        <>
+          <Text style={styles.taskTitle}>{data[0].taskTitle}</Text>
+          <Text>{data[0].taskText}</Text>
+          <Text style={styles.deadline}>Deadline: {formatDate(data[0].taskDate)}</Text>
+          <Text style={styles.error}>{data[0].taskText}</Text>
+        </>
+      ) : (
+        <>
+          <Text style={styles.taskTitle}>{taskTitle}</Text>
+          <Text>{taskText}</Text>
+          <Text style={styles.deadline}>Deadline: {taskDate}</Text>
+        </>
+      )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 20,
+  },
+  taskTitle: {
+    fontWeight: 'bold',
+  },
+  deadline: {
+    fontStyle: 'italic',
+  },
+  error: {
+    color: 'bluea',
+  },
+});
 
 export default ActiveTask;

@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Categories from './components/screens/client/Categories';
 import Dashboard from './components/screens/worker/WorkersDashBoard/DashBoard';
 import WorkerProfil from './components/screens/WorkerProfil/WorkerProfil';
+import EditProfil from './components/screens/worker/EditProfil'; 
 // import Edit from './components/screens/WorkerProfil/Edit';
 // import Navigation from './Navigation';
 // import { StatusBar } from 'expo-status-bar';
@@ -18,7 +19,7 @@ import WorkerProfil from './components/screens/WorkerProfil/WorkerProfil';
 import Authentication from './components/screens/Authentication';
 import HomePage from './components/screens/client/HomePage';
 // import Inbox from './components/screens/Inbox';
-// import OffersScreen from './components/screens/worker/OffersScreen';
+import OffersScreen from './components/screens/worker/OffersScreen';
 // import ReportScreen from './components/screens/worker/ReportScreen';
 // import HistoryScreen from './components/screens/worker/HistoryScreen';
 // import ChatWindow2 from './components/screens/Chatwindow2';
@@ -42,10 +43,12 @@ export default function App() {
         <Stack.Screen name = "CreateTask" component={CreateATask}/>
         <Stack.Screen name = "Workers" component ={Workers}/>
         <Stack.Screen name = "Dashboard" component = {Dashboard}/>
+        <Stack.Screen name="OfferScreen" component={OffersScreen} />
         {/* <Stack.Screen name="Dashboard" component={Dashboard} /> */}
         <Stack.Screen name="WorkerProfil" component={WorkerProfil}/> 
+        <Stack.Screen name="EditProfil" component={EditProfil}/> 
         {/* <Stack.Screen name="ChatWindow" component={ChatWindow} />
-        <Stack.Screen name="OfferScreen" component={OffersScreen} />
+        
         <Stack.Screen name="Inbox" component={Inbox} />
         <Stack.Screen name="Edit" component={Edit} />
         <Stack.Screen name="ReportScreen" component={ReportScreen}/>

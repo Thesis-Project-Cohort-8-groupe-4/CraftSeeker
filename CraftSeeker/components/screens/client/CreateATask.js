@@ -1,5 +1,13 @@
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, Text,Image } from 'react-native';CreateATask = () => {
+import React, { useState,useEffect} from 'react';
+import axios from 'axios';
+import Link from '../Link';
+
+import { View, TextInput, StyleSheet, TouchableOpacity, Text,Image } from 'react-native';CreateATask = (props) => {
+  const {workersId,clientId} = props.route.params
+  useEffect(()=>{
+    console.log(workersId , "workersId", clientId,"clientId")
+  },[])
+  
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const handleTaskNameChange = (text) => {
@@ -8,10 +16,20 @@ import { View, TextInput, StyleSheet, TouchableOpacity, Text,Image } from 'react
   const handleTaskDescriptionChange = (text) => {
     setTaskDescription(text);
   };
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     console.log(`Task Name: ${taskName}, Task Description: ${taskDescription}`);
-    setTaskName('');
-    setTaskDescription('');
+    axios.post(`http://${Link}:4000/api/tasks/addatask`,{
+      clients_clientId : clientId,
+      workers_workersId :workersId,
+      taskTitle: taskName,
+      taskText : taskDescription
+    }).then((res)=>{
+      console.log(res.data)
+
+    }).catch(err=>{
+      console.log(err)
+    })
+    
   };
   return (
     <View style={styles.container}>

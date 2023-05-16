@@ -71,7 +71,7 @@ export default function Authentication() {
         // authentication successful, store token and navigate to authenticated screen
         await AsyncStorage.setItem('token', response.data.token);
         console.log("login success without token", response.data);
-        navigation.navigate("HomePage",{id : response.data.clientId});
+        navigation.navigate("HomePage",{id : response.data.data.clientId});
       } else {
         // authentication failed, display error message
         Alert.alert('Error', response.data.message);
@@ -85,8 +85,9 @@ export default function Authentication() {
       if (response.status === 200) {
         // authentication successful, store token and navigate to authenticated screen
         await AsyncStorage.setItem('token', response.data.token);
-        console.log("login success worker without token", response.data);
-        navigation.navigate("Dashboard",{id : response.data.workersId});
+        console.log("login success worker without token",response.data.data.workersId);
+        console.log(response.data.workersId,"==========")
+        navigation.navigate("Dashboard",{id : response.data.data.workersId});
       } else {
         // authentication failed, display error message
         Alert.alert('Error', response.data.message);

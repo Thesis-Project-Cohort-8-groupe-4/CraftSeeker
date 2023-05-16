@@ -6,19 +6,26 @@ import axios from 'axios'
 import { Button } from 'react-native-elements'
 import { Alert } from 'react-native'
 import { io } from 'socket.io-client'
+import Link from '../Link'
 
-export default function OffersScreen() {
+export default function OffersScreen(props) {
   const [offers , setOffers] = useState([])
   const [workerId ,setWorkerId] = useState("")
   const [toggle ,setToggle] = useState(false)
-  const socket = io("http://192.168.103.7:5000")
+  const socket = io(`http://${Link}:5000`)
+
+  const id = props.route.params.id
 
   const handleToggle=()=>{
     setToggle(!toggle)
   } 
+
+  useEffect(()=>{
+    console.log(id)
+  },[])
  
   useEffect(()=>{
-   axios.get("http://192.168.103.7:4000/api/tasks/getworkeroffers/9")
+   axios.get(`http://${Link}:4000/api/tasks/getworkeroffers/${id}`)
    .then((res)=>{
     setOffers(res.data)
     console.log(offers)
@@ -30,7 +37,7 @@ export default function OffersScreen() {
    
 
 const handleAcceptance=(taskTitle,taskId,clientId,workersId)=>{
-      axios.get(`http://192.168.103.7:4000/chatboxes/getchatroombymembers/${workersId}/${clientId}`)
+      axios.get(`http://${Link}:4000/chatboxes/getchatroombymembers/${workersId}/${clientId}`)
       .then((res)=>{
         if(res.data.length!==0){
           console.log("this is the result",res.data[0])
@@ -67,7 +74,7 @@ const handleAcceptance=(taskTitle,taskId,clientId,workersId)=>{
       .catch((err)=>{
            console.log(err)
       })
-       axios.put(`http://192.168.103.7:4000/api/tasks/changetaskstatus/${taskId}`,{taskStatus:"in Progress"})
+       axios.put(`http://${Link}:4000/api/tasks/changetaskstatus/${taskId}`,{taskStatus:"in Progress"})
        .then(results=>{
         console.log(results)
         Alert.alert("you have accepted this request")
@@ -81,7 +88,7 @@ const handleAcceptance=(taskTitle,taskId,clientId,workersId)=>{
 
 
   const handleDenial =(taskTitle,taskId,clientId,workersId)=>{
-    axios.get(`http://192.168.103.7:4000/chatboxes/getchatroombymembers/${workersId}/${clientId}`)
+    axios.get(`http://${Link}:4000/chatboxes/getchatroombymembers/${workersId}/${clientId}`)
       .then((res)=>{
         if(res.data.length!==0){
           console.log("this is the result",res.data[0])
@@ -118,7 +125,7 @@ const handleAcceptance=(taskTitle,taskId,clientId,workersId)=>{
       .catch((err)=>{
            console.log(err)
       })
-    axios.put(`http://192.168.103.7:4000/api/tasks/changetaskstatus/${workersId }`,{taskStatus:"denied"})
+    axios.put(`http://${Link}:4000/api/tasks/changetaskstatus/${workersId }`,{taskStatus:"denied"})
     .then(results=>{
      console.log(results)
      Alert.alert("you have denied this request")

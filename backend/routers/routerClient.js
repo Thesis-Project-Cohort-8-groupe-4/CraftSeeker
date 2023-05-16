@@ -142,6 +142,7 @@ clientRouter.delete('/delete/:id',(req,res)=>{
 })
 
 clientRouter.post('/login', authenticateToken, async (req, res) => {
+  console.log("sdqsdq")
     const { clientEmail, clientPassword } = req.body;
     const sql = `SELECT * FROM clients WHERE clientEmail = ?`;
     conn.query(sql, [clientEmail], async (err, results) => {

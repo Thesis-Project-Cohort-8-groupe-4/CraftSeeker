@@ -75,7 +75,7 @@ workerRouter.post('/addworker', async (req, res) => {
 })
 
 workerRouter.get('/getWorkersInfo', (req, res) => {
-    const sql = `SELECT workerFirstName, workerJob, workerHourlyPrice,workerRating  FROM workers;`;
+    const sql = `SELECT workerFirstName, workerJob, workerHourlyPrice,workerRating ,imageUrl,workersId  FROM workers;`;
     conn.query(sql, (err, results) => {
       if (err) {
         console.log(err);
@@ -105,11 +105,11 @@ workerRouter.put('/completeAprofile/:id', (req, res) => {
 });
 workerRouter.put('/update/:id', (req, res) => {
     const id = req.params.id;
-    const { workerProfessionalSummary, workerYearsOfExperience,workerFirstName, workerLastName, workerAdress, workerEmail, workerCategory, workerDateOfBirth, workerPhoneNumber, workerJob, workerPassword, workerNumberOfJobs } = req.body;
+    const { workerFirstName, workerLastName, workerAdress, workerEmail,  workerPhoneNumber , imageUrl} = req.body;
     const sql = `UPDATE workers
-                 SET workerFirstName = ? , workerLastName = ? , workerAdress= ? , workerEmail=?, workerCategory= ? , workerDateOfBirth= ? , workerPhoneNumber = ?,workerJob=?, workerPassword = ? , workerNumberOfJobs=?
+                 SET workerFirstName = ? , workerLastName = ? , workerAdress= ? , workerEmail=? , workerPhoneNumber = ? ,imageUrl =?
                  WHERE workersId = ?`;
-    conn.query(sql, [workerFirstName, workerLastName, workerAdress, workerEmail, workerCategory, workerDateOfBirth, workerPhoneNumber, workerJob, workerPassword, workerNumberOfJobs, id], (err, results) => {
+    conn.query(sql, [workerFirstName, workerLastName, workerAdress, workerEmail, workerPhoneNumber ,imageUrl, id], (err, results) => {
       if (err) {
         console.log(err);
         res.status(500).json(err);
@@ -186,7 +186,8 @@ workerRouter.put('/editWorkInfo/:id', (req, res) => {
 
 workerRouter.post('/login', authenticateToken, async (req, res) => {
     const { workerEmail, workerPassword } = req.body;
-    const sql = `SELECT * FROM workers WHERE workerEmail = ?`;
+    console.log("zdsqdqds")
+        const sql = `SELECT * FROM workers WHERE workerEmail = ?`;
     conn.query(sql, [workerEmail], async (err, results) => {
         if (err) {
             console.log(err);

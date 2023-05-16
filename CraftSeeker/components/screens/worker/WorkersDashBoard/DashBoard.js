@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from 'react-native-elements';
+
 
 import Reports from './Reports';
 import TaskHistory from './TaskHistory';
@@ -12,7 +13,10 @@ import Rating from './Ratings';
 const Dashboard = (props) => {
   const navigation = useNavigation();
   const [offerCount, setOfferCount] = useState(0);
-  const id = props.route.params.workersId
+  const id = props.route.params.id
+  useEffect(()=>{
+    console.log(id,"fucn")
+  },[])
 
   const handleOfferCountChange = (count) => {
     setOfferCount(count);
@@ -43,7 +47,7 @@ const Dashboard = (props) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.offerRequests}
-          onPress={() => navigation.navigate('OfferRequests')}>
+          onPress={() => navigation.navigate('OfferScreen',{id:id})}>
           <Text>Offers Requests</Text>
           <Text>you have {offerCount} offers</Text>
         </TouchableOpacity>

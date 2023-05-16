@@ -3,7 +3,8 @@ const taskRouter = express.Router()
 const conn = require ("../database/index.js")
 
 taskRouter.post('/addatask',(req,res)=>{
-    const {clients_clientId,workers_workersId,taskTitle,taskText ,taskStatus } = req.body
+    const {clients_clientId, workers_workersId ,taskTitle,taskText } = req.body
+    const taskStatus = "Pending"
     const taskDate = new Date().toISOString().slice(0,19).replace('T',' ')
     const sql = `INSERT INTO tasks (clients_clientId, workers_workersId, taskTitle, taskText, taskDate,taskStatus)
     VALUES (?,?, ?,?, ?,?);`
