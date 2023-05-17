@@ -5,18 +5,41 @@ import { Center } from 'native-base'
 import { useEffect,useState } from 'react'
 import axios from "axios"
 import { TouchableOpacity } from 'react-native'
-export default function Inbox() {
+import Link from './Link'
+import { useNavigation } from '@react-navigation/native'
+export default function Inbox(props) {
+   const navigation = useNavigation()
    const[chatrooms,setChatRooms] =useState([])
+   const id = props.route.params.workersId || props.route.params.clientId
 
    useEffect(()=>{
-    axios.get(`http://192.168.1.11:4000/chatboxes/getworkerinbox/20cf2af875f621f93dd91e52ff97942bfbb03ccd8cea6d58258121c9774cad77`)
+    console.log(id,"Chat")
+   },[])
+
+   useEffect(()=>{
+    axios.get(`http://${Link}:4000/chatboxes/getworkerinbox/${id}`)
     .then(res=>{
+      if(!res.data){
+        axios.get(`http://${Link}:4000/chatboxes/getclientinbox/${id}`)
+        .then((result)=>{
+          console.log(result.data)
+          setChatRooms(result.data)
+        })
+        .catch(error=>{
+          console.log(error)
+        })
+      } 
+      console.log(res.data)
       setChatRooms(res.data)
     })
     .catch(err=>{
       console.log(err)})
    },[])
    console.log(chatrooms)
+
+   const navigateToRoom=(receiverId,roomId,receiverName)=>{
+      navigation.navigate("ChatWindow",{data:{roomId:roomId,receiverId:receiverId,id:id ,receiverName:receiverName}})
+   }
 
 
   return (
@@ -35,8 +58,17 @@ export default function Inbox() {
       </View>
       :
         chatrooms.map((e,i)=>{
+          if(e.workersId){
+            return(
+            <TouchableOpacity key ={i} onPress={()=>navigateToRoom(e.workersId,e.roomId,e.workerFirstName)}>
+            <View style ={styles.chatbox} >
+             <Text style={styles.chatName}>{e.workerFirstName}</Text>
+            </View>
+            </TouchableOpacity>
+            )
+          }
           return(
-            <TouchableOpacity key ={i}>
+            <TouchableOpacity key ={i} onPress={()=>navigateToRoom(e.clientId,e.roomId,e.clientFirstName)}>
             <View style ={styles.chatbox} >
              <Text style={styles.chatName}>{e.clientFirstName}</Text>
             </View>

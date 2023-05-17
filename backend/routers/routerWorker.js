@@ -186,7 +186,6 @@ workerRouter.put('/editWorkInfo/:id', (req, res) => {
 
 workerRouter.post('/login', authenticateToken, async (req, res) => {
     const { workerEmail, workerPassword } = req.body;
-    console.log("zdsqdqds")
         const sql = `SELECT * FROM workers WHERE workerEmail = ?`;
     conn.query(sql, [workerEmail], async (err, results) => {
         if (err) {

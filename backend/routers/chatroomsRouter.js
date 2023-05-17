@@ -4,7 +4,7 @@ const chatroomsRouter = express.Router()
 
 chatroomsRouter.get('/getworkerinbox/:workerId',(req,res)=>{
   const {workerId} = req.params
-  const sql =`SELECT chatrooms.roomId , clients.clientFirstName , clients.clientLastName
+  const sql =`SELECT chatrooms.roomId , clients.clientFirstName , clients.clientLastName , clients.clientId
               FROM chatrooms 
               INNER JOIN clients ON clients.clientId  = chatrooms.clientId
               WHERE chatrooms.workersId = ?; ` 
@@ -21,7 +21,7 @@ chatroomsRouter.get('/getworkerinbox/:workerId',(req,res)=>{
 
 chatroomsRouter.get('/getclientinbox/:clientId',(req,res)=>{
     const {clientId} = req.params
-    const sql =`SELECT chatrooms.roomId , workers.workerFirstName , workers.workerLastName
+    const sql =`SELECT chatrooms.roomId , workers.workerFirstName , workers.workerLastName,workers.workersId 
                 FROM chatrooms 
                 INNER JOIN workers ON workers.workersId  = chatrooms.workersId
                 WHERE chatrooms.clientId = ? ;` 

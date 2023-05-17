@@ -24,7 +24,10 @@ const Dashboard = (props) => {
  // dashboard presk qryb tekml , mazel kn design 
  // mahabich ypushi 
  const navigateToProfile=()=>{
-   navigation.navigate("WorkerProfil" , {id:id})
+   navigation.navigate("WorkerProfil",{id:id})
+ }
+ const navigateToInbox=()=>{
+   navigation.navigate("Inbox",{workersId:id})
  }
  
   return (
@@ -32,6 +35,7 @@ const Dashboard = (props) => {
     <View style={styles.logoContainer}>
       <Text>DashBoard</Text>
       <Button title ="Profile" onPress ={navigateToProfile}></Button>
+      <Button title ="Inbox" onPress={navigateToInbox}></Button>
     </View>
     <View style={styles.container}>
       <View style={styles.topThreeContainer}>

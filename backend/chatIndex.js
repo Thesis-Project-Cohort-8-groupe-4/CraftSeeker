@@ -34,7 +34,7 @@ io.on("connection",(socket)=>{
         const sql = `INSERT INTO chatrooms(roomId,clientId,workersId) values(?,?,?) ` 
         conn.query(sql,[uniqueId,clientId,workerId],(err,results)=>{
         if(err){
-          console.log(err)
+          console.log(err,"sql")
         }
         console.log(results)
         })
@@ -46,7 +46,7 @@ io.on("connection",(socket)=>{
         console.log(results)
         
     }).catch(err=>{
-        console.log(err)
+        console.log(err,"mongoose")
         
     })
       }

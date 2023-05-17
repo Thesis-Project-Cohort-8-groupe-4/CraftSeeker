@@ -12,7 +12,7 @@ export default function OffersScreen(props) {
   const [offers , setOffers] = useState([])
   const [workerId ,setWorkerId] = useState("")
   const [toggle ,setToggle] = useState(false)
-  const socket = io(`http://${Link}:5000`)
+  const socket = io(`http://${Link}:6000`)
 
   const id = props.route.params.id
 
@@ -43,9 +43,8 @@ const handleAcceptance=(taskTitle,taskId,clientId,workersId)=>{
           console.log("this is the result",res.data[0])
           socket.emit("receive",{
             uniqueId:res.data[0].roomId,
-            workerId:workersId,
-            clientId:clientId,
-            senderClient: false,
+            senderId:workersId,
+            receiverId:clientId,
             messageText: `task request ${taskTitle} with the id of ${taskId} has been accepted `,
             createdAt: Date.now()
           })
@@ -60,10 +59,9 @@ const handleAcceptance=(taskTitle,taskId,clientId,workersId)=>{
             console.log(uniqueId)
             roomId = uniqueId
             socket.emit("receive",{
-              uniqueId:uniqueId,
-              workerId:workersId,
-              clientId:clientId,
-              senderClient: false,
+              uniqueId:res.data[0].roomId,
+              senderId:workersId,
+              receiverId:clientId,
               messageText: `task request ${taskTitle} with the id of ${taskId} has been accepted `,
               createdAt: Date.now()
             })
@@ -94,9 +92,8 @@ const handleAcceptance=(taskTitle,taskId,clientId,workersId)=>{
           console.log("this is the result",res.data[0])
           socket.emit("receive",{
             uniqueId:res.data[0].roomId,
-            workerId:workersId,
-            clientId:clientId,
-            senderClient: false,
+            senderId:workersId,
+            receiverId:clientId,
             messageText: `task request ${taskTitle} with the id of ${taskId} has been denied `,
             createdAt: Date.now()
           })
@@ -111,11 +108,10 @@ const handleAcceptance=(taskTitle,taskId,clientId,workersId)=>{
             console.log(uniqueId)
             roomId = uniqueId
             socket.emit("receive",{
-              uniqueId:uniqueId,
-              workerId:workersId,
-              clientId:clientId,
-              senderClient: false,
-              messageText: `task request ${taskTitle} with the id of ${taskId} has been denied `,
+              uniqueId:res.data[0].roomId,
+              senderId:workersId,
+              receiverId:clientId,
+              messageText: `task request ${taskTitle} with the id of ${taskId} has been accepted `,
               createdAt: Date.now()
             })
             console.log("message sent")
@@ -155,8 +151,8 @@ const handleAcceptance=(taskTitle,taskId,clientId,workersId)=>{
             <Text style={styles.taskTitle}>Request : {e.taskTitle}</Text>
             <Text style = {styles.taskDescription}>description:{e.taskText}</Text>
             <View style ={styles.buttonContainer}>
-            <Button title= "accept" buttonStyle ={styles.accept} containerStyle={styles.buttonSpacing} onPress={()=>handleAcceptance(e.taskTitle,e.taskId,e.clientId,9)} ></Button>
-            <Button  buttonStyle ={styles.deny} title="deny" containerStyle={styles.buttonSpacing} onPress={()=>handleDenial(e.taskTitle,e.taskId,e.clientId,9)}></Button>
+            <Button title= "accept" buttonStyle ={styles.accept} containerStyle={styles.buttonSpacing} onPress={()=>handleAcceptance(e.taskTitle,e.taskId,e.clientId,id)} ></Button>
+            <Button  buttonStyle ={styles.deny} title="deny" containerStyle={styles.buttonSpacing} onPress={()=>handleDenial(e.taskTitle,e.taskId,e.clientId,id)}></Button>
             </View>
         </View>
         )})}

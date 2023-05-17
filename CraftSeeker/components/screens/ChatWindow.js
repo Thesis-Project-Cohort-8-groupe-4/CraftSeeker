@@ -6,18 +6,27 @@ import { io } from 'socket.io-client'
 import { TouchableOpacity } from 'react-native'
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Link from './Link'
 // import { Center, Divider } from "native-base";
-export default function ChatWindow() {
+export default function ChatWindow(props) {
   const  [messageText, setMessageText] = useState("")
   const  [uniqueId ,setUniqueId] = useState("")
   const  [messages,setMessages] = useState([])
   const [inputContainerHeight, setInputContainerHeight] = useState(0);
+  const [receiverName ,setReceiverName] = useState("")
+  const [senderId ,setSenderId] = useState("")
+  const [receiverId ,setReceiverId] = useState("")
 
-  const senderId ="74c87b397e47c119e2564682c3399a28a9fe010a8ef116cb53e31bcb8e5d5857" 
-  const receiverId ="20cf2af875f621f93dd91e52ff97942bfbb03ccd8cea6d58258121c9774cad77"
+  useEffect(()=>{
+    setUniqueId(props.route.params.data.roomId)
+    setReceiverName(props.route.params.data.receiverName)
+    setSenderId(props.route.params.data.id )
+    setReceiverId(props.route.params.data.receiverId)
+  },[])
 
-  const socket = io("http://192.168.0.101:5000",{
-    query :{uniqueId :"4d813b53-fd7e-48ff-81fe-217d74432e67"}
+
+  const socket = io(`http://${Link}:6000`,{
+    query :{uniqueId :`${props.route.params.data.roomId}`}
   })
 
   useEffect(()=>{
@@ -25,7 +34,7 @@ export default function ChatWindow() {
       setMessages(data)
       console.log(messages)
     })  
-  },[]) 
+  },[messages]) 
   // add messages as a dependency
   
   const getDate=()=>{
@@ -39,9 +48,9 @@ export default function ChatWindow() {
 }
   const handleMessageSending=()=>{
     const messageObj = {
-      uniqueId :"4d813b53-fd7e-48ff-81fe-217d74432e67",
-      senderId: "74c87b397e47c119e2564682c3399a28a9fe010a8ef116cb53e31bcb8e5d5857",
-      receiverId :"20cf2af875f621f93dd91e52ff97942bfbb03ccd8cea6d58258121c9774cad77",
+      uniqueId :uniqueId,
+      senderId: senderId,
+      receiverId :receiverId,
       createdAt : getDate(),
       messageText:messageText
     }
@@ -62,7 +71,7 @@ export default function ChatWindow() {
     <View style={styles.container}>
       <View style={styles.subContainer}>
         <View style = {styles.titleContainer}>
-        <Text style = {styles.title}> receiver name</Text>
+        <Text style = {styles.title}>{receiverName}</Text>
         </View>
         <View>
           {messages.map((e, i) => {
