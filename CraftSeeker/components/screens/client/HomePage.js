@@ -20,7 +20,7 @@ const [isPriceAscending, setPriceAscending] = useState(true);
     fetchData();
     
   }, []);
-
+  
   const toggleMenu = () => {
     setMenuVisible(!isMenuVisible);
   };
@@ -54,8 +54,7 @@ const [isPriceAscending, setPriceAscending] = useState(true);
         <View style={{ flexDirection: 'column' }}>
           <Text style={styles.cardTitle}>{item.workerFirstName}</Text>
           <Text style={styles.cardText}>{item.workerJob}</Text>
-          <Text style={styles.cardText}>{item.workerHourlyPrice}$/hour</Text>
-           
+          <Text style={styles.cardText}>{item.workerHourlyPrice}$/hour</Text>           
 <Button
       title="Demand"
       style={{ borderRadius: 10,height:20,width:20, }}
